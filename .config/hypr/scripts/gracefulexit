@@ -1,0 +1,22 @@
+# close all client windows
+# required for graceful exit since many apps aren't good SIGNAL citizens
+HYPRCMDS=$(hyprctl -j clients | jq -j '.[] | "dispatch closewindow address:\(.address); "')
+hyprctl --batch "$HYPRCMDS" >> /tmp/hypr/hyprexitwithgrace.log 2>&1
+
+
+killall pipewire
+killall pipewire-pulse
+killall wireplumber
+killall xembedsniproxy
+killall easyeffects
+killall dunst
+killall hyprpaper
+killall waybar
+killall batsignal
+killall playerctld
+
+# exit hyprland
+# DON'T DO IT! Exiting hyprland aborts shutdown request.
+# Instead rely on shutdown to exit hyprland process.
+# (Hyprland appears to be a good Linux SIGNAL citizen.)
+hyprctl dispatch exit
